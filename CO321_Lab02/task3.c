@@ -17,7 +17,17 @@ int main(void) {
     DDRD &= ~(1 << PD2);
     PORTD |= (1 << PD2);
 
+    /*
+    * Enables interrupt 0
+    */
     EIMSK |= (1 << INT0);
+
+    /*
+    * EICRA = External Interrupt Control Register A
+    * ISC01 = 2
+    * ISC00 = 1
+    * That is why the bitwise or operation is used here
+    */
     EICRA |= (1 << ISC01) | (1 << ISC00); 
 
     sei();
