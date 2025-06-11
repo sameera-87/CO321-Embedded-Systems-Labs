@@ -7,7 +7,6 @@ int main(void) {
     // Set PB5 as output
     DDRB |= (1 << PB5);
 
-
     TCNT0 = 0;
     TCCR0A = 0b00000000;  // Normal mode
     TCCR0B = 0b00000101;  // Prescaler = 1024

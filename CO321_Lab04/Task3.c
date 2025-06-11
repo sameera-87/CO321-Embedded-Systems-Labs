@@ -2,29 +2,101 @@
 #include <util/delay.h>
 
 #define F_CPU 16000000UL
+#define BLINK_DELAY_MS 1000
 
-void playFrequency(uint16_t freq) {
-    // Prescaler 64
-    uint32_t top = (F_CPU / (freq * 64UL)) - 1;
-
-    ICR1 = top;           // TOP value for Fast PWM mode 14
-    OCR1B = top / 2;      // 50% duty cycle
-
-    // Fast PWM mode 14, TOP = ICR1
-    TCCR1A = (1 << COM1B1) | (1 << WGM11);
-    TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS11) | (1 << CS10);
+// Helper function to set prescaler bits in TCCR0B
+void set_prescaler(uint8_t prescale_code) {
+    // Clear prescaler bits (CS02, CS01, CS00)
+    TCCR0B &= ~((1 << CS02) | (1 << CS01) | (1 << CS00));
+    // Set new prescaler bits
+    TCCR0B |= prescale_code;
 }
 
 int main(void) {
-    DDRD |= (1 << PD4);  // OC1B pin output
+    // Set PD6 (OC0A) as output
+    DDRD |= (1 << 6);
 
-    uint16_t notes[] = {262, 330, 392, 523};
-    uint8_t i;
+    // Set Fast PWM 8-bit, non-inverting mode
+    TCCR0A = (1 << WGM00) | (1 << WGM01) | (1 << COM0A1);
+    // WGM02=0 in TCCR0B for Fast PWM 8-bit
+
+    // Duty cycle (volume) fixed to 128 (50%)
+    OCR0A = 128;
+
+    // Prescaler codes for Timer0:
+    // CS02 CS01 CS00 | Prescaler
+    // 0    0    1    | 1
+    // 0    1    0    | 8
+    // 0    1    1    | 64
+    // 1    0    0    | 256
+    // 1    0    1    | 1024
+
+    // We will generate frequencies in increasing order by changing prescaler
+
+    // Array of prescaler codes in increasing frequency order:
+    uint8_t prescalers[] = {
+        (1 << CS02) | (1 << CS00),  // 1024 -> ~61 Hz
+        (1 << CS02),                // 256  -> ~244 Hz
+        (1 << CS01) | (1 << CS00),  // 64   -> ~976 Hz
+        (1 << CS01),                // 8    -> ~7,812 Hz
+        // skipping 1 (62kHz) as it's too high to hear or useful
+    };
 
     while (1) {
+
+        int i;
+        
         for (i = 0; i < 4; i++) {
-            playFrequency(notes[i]);
-            _delay_ms(700);
+            set_prescaler(prescalers[i]);
+            _delay_ms(BLINK_DELAY_MS);
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// #include <avr/io.h>
+// #include <util/delay.h>
+
+// #define BLINK_DELAY_MS 1000
+
+// // Fast PWM mode ==> WGM00 =1, WGM01=1, WGM02=0
+// // Non inverting mode ==> COM0A0 =0, COM0A1=1
+// // Prescales ==> 8,64,256,1024 
+// // Prescale values: 2 = 8, 3 = 64, 4 = 256, 5 = 1024  <-- frequency chnges with prescale
+
+// int main()
+// {
+
+//     DDRD = DDRD | (1 << 6);
+    
+
+//     TCCR0A |= (1 << WGM00) | (1 << WGM01) | (1 << COM0A1);
+
+//     int prescale;
+//     // int value = 50;
+//     int value = 1000;
+
+//     while (1)
+//     {
+//         for (prescale = 2; prescale <= 5; prescale++)
+//         {   
+//             OCR0A = value; 
+//             TCCR0B = prescale; // Increase Prescale
+//             value -= 10; // Decrease duty cycle
+//             _delay_ms(BLINK_DELAY_MS);
+//         }
+//     }
+
+//     return 0;
+// }

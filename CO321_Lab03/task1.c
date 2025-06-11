@@ -11,7 +11,7 @@ void delay_timer2ms(){
     TCCR0A = 0b00000000;
     TCCR0B = 0b00000000;  // clear the timer otherwise it will keep counting
 
-    TIFR0 =0x01;
+    TIFR0 = 0x01;
 }
 
 int main(void){
