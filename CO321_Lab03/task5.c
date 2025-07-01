@@ -26,7 +26,7 @@ int main(void) {
 ISR(TIMER0_OVF_vect) {
     overflow_count++;
     if (overflow_count >= 6) {  // ~100 ms
-        PORTB ^= (1 << PB5);
+        PORTB ^= (1 << 5);
         overflow_count = 0;
     }
 }

@@ -6,7 +6,7 @@ void delay_timer(){
     TCNT1 = 49910;
 
     TCCR1A = 0b0000000000000000;
-    TCCR1B = 0b0000000000000101;  //Prescale is 1:256
+    TCCR1B = 0b0000000000000101;  //Prescale is 1:1024
 
     while ((TIFR1 & 0x0001)==0){}
 
