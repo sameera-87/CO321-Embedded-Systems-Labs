@@ -7,6 +7,7 @@ int main(void) {
     // Set Fast PWM Mode to do that WGM01 and WGM00 to 1, WGM02 = 0
     TCCR0A |= (1 << WGM00);
     TCCR0A |= (1 << WGM01);
+
     // Clear WGM02 to set Fast PWM mode
     TCCR0B &= ~(1 << WGM02);
 
@@ -17,6 +18,7 @@ int main(void) {
     // Set Prescaler to 64: CS01 and CS00 to 1
     TCCR0B |= (1 << CS01);   //Clock Select bits in TCCR0B
     TCCR0B |= (1 << CS00);
+
     // Clear CS02 to set prescaler to 64
     TCCR0B &= ~(1 << CS02);
 
