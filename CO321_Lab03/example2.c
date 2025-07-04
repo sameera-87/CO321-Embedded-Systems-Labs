@@ -24,3 +24,9 @@ int main(void){
         delay_timer0();
     }
 }
+
+
+
+// avr-gcc -Os -DF_CPU=16000000UL -mmcu=atmega328p -o task4_r task4_r.c
+// avr-objcopy -O ihex -R .eeprom task4_r task4_r.hex
+// avrdude -F -V -c arduino -p ATMEGA328P -P COM3 -b 115200 -U flash:w:task4_r.hex
