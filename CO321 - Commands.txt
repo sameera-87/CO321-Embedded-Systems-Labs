@@ -1,7 +1,7 @@
-avr-gcc -Os -DF_CPU=16000000UL -mmcu=atmega328p -o task1_r task1_r.c 
+avr-gcc -Os -DF_CPU=16000000UL -mmcu=atmega328p -o Task1 Task1.c 
 
 
-avr-objcopy -O ihex -R .eeprom task1_r task1_r.hex 
+avr-objcopy -O ihex -R .eeprom Task1 Task1.hex 
 
 
-avrdude -F -V -c arduino -p ATMEGA328P -P COM3 -b 115200 -U flash:w:task1_r.hex
+avrdude -F -V -c arduino -p ATMEGA328P -P COM3 -b 115200 -U flash:w:Task1.hex
